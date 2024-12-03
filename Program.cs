@@ -1,51 +1,73 @@
-﻿internal class Program
+﻿using System.Runtime.InteropServices;
+
+internal class Program
 {
-    static string CharToString(string userInput)
+    static int UserChoiceToInt(string UserInput)
     {
-        Dictionary<char, string> choices =
-                new Dictionary<char, string>(){
-                    {'r', "Rock" },
-                    { 'p', "Paper"},
-                    { 's', "Scissors"}
-                };
-        
-        foreach (KeyValuePair<char, string> temp in choices)
+        if (UserInput.Length == 1)
         {
-            if (char.Parse(userInput) == temp.Key)
+            char UserInputChar = UserInput[0];
+            int UserChoice = 0;
+
+            Dictionary<char, int> choices =
+                    new Dictionary<char, int>(){
+                    {'r', 1 },
+                    { 'p', 2},
+                    { 's', 3}
+                    };
+
+            if (choices.TryGetValue(UserInputChar, out UserChoice))
             {
-                userInput = temp.Value;
-                break;
+                return UserChoice;
             }
+
+            throw new Exception($"{UserInput} is not an option");
+        }
+        else
+        {
+            int UserChoice = 0;
+            Dictionary<string, int> choices =
+                    new Dictionary<string, int>(){
+                    {"rock", 1 },
+                    { "paper", 2},
+                    { "scissor" , 3}
+                    };
+
+            if (choices.TryGetValue(UserInput.ToLower(), out UserChoice))
+            {
+                return UserChoice;
+            }
+
+            throw new Exception($"{UserInput} is not an option");
         }
 
-        if (userInput.Length == 1)
-        {
-            throw new Exception($"{userInput} is not a choice");
-        }
-        
-        return userInput;
     }
+
     private static void Main(string[] args)
     {
-        Console.WriteLine("Rock, Paper, or Scissors?");
+        List<string> choices =
+            new List<string>(){
+            "Rock",
+            "Paper",
+            "Scissors"
+        };
 
-        string ?userChoice = Console.ReadLine();
+        Console.WriteLine($"Choose from the following: {string.Join(", ", choices)}");
 
-        if (userChoice == null)
+        string ?UserChoice = Console.ReadLine();
+
+        if (UserChoice == null)
         {
-            throw new Exception($"Input cannot be {userChoice}");
+            throw new Exception($"Input cannot be {UserChoice}");
         }
 
-        if (userChoice == "")
+        if (UserChoice == "")
         {
             throw new Exception("Input Not Detected Try Again");
         }
 
-        if (userChoice.Length == 1)
-        {
-            userChoice = CharToString(userChoice);
-        }
+        int UserInput = UserChoiceToInt(UserChoice);
 
-        
+        Console.WriteLine(UserInput);
     }
 }
